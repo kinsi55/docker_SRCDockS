@@ -48,7 +48,7 @@ loadCleanAddons() {
 
 addCustomFiles() {
 	echo "Adding custom layers..."
-	cp -rsfv /layers/*/ /srcds/srv/$APP_NAME/ 2> /dev/null
+	cp -rsfv /layers/*/* /srcds/srv/$APP_NAME/ 2> /dev/null
 
 	echo "Adding custom files..."
 	cp -rsf /custom/* /srcds/srv/$APP_NAME/ 2> /dev/null
