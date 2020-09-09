@@ -56,7 +56,7 @@ Like layers, everything in the custom directory is linked into the server on lau
 
 ##### Example for a Layer:
 
-Base Folder: `/custom/LAYERS/steamworks`, contains its extension files in the respective directory structure `addons/sourcemod/extensions/*`
+Base Folder: `/layers/steamworks`, contains its extension files in the respective directory structure `addons/sourcemod/extensions/*`
 
 ##### Custom folder:
 
