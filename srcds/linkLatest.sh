@@ -48,21 +48,10 @@ loadCleanAddons() {
 
 addCustomFiles() {
 	echo "Adding custom layers..."
-	cp -rsfv /layers/*/* /srcds/srv/$APP_NAME/ 2> /dev/null
+	cp -rsfv /layers/*/* /srcds/srv/$APP_NAME/ 2> /dev/null || true
 
 	echo "Adding custom files..."
-	cp -rsf /custom/* /srcds/srv/$APP_NAME/ 2> /dev/null
-}
-
-runServerCustom() {
-	export LD_LIBRARY_PATH="/srcds/srv:/srcds/srv/bin"
-	./srcds_linux -game $APP_NAME +map de_dust2 $SRCDS_ARGS -strictportbind -ip 0.0.0.0 -autoupdate -nobreakpad
-}
-
-runServer() {
-	# The order is IMPORTANT. -autoupdate enables auto-restart,
-	# but -norestart removes it again, keeping autoupdate active but using my autorestart instead
-	/bin/bash srcds_run $SRCDS_ARGS -strictportbind -ip 0.0.0.0 -autoupdate -norestart -nobreakpad
+	cp -rsf /custom/* /srcds/srv/$APP_NAME/ 2> /dev/null || true
 }
 
 cd /srcds/srv
@@ -70,28 +59,3 @@ cd /srcds/srv
 loadLatestVersion
 loadCleanAddons
 addCustomFiles
-
-# while true
-# do
-# 	loadLatestVersion
-
-# 	if [[ $SRCDS_RUN == "1" ]]
-# 	then
-# 		runServer #&
-# 	else
-# 		runServerCustom #&
-# 	fi
-
-# 	#child=$!
-# 	#wait "$child"
-
-
-# 	# if test $retval -eq 0 then
-# 	# 	break; # if 0 is returned then just quit
-# 	# fi
-# 	# test $? -gt 128 && break;
-
-# 	echo "Server exited, waiting a short moment before restarting..."
-
-# 	sleep 5
-# done
