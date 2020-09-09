@@ -14,7 +14,7 @@ RUN apt-get install -y nodejs --no-install-recommends --no-install-suggests
 FROM NODE AS NODE_MODULES
 
 WORKDIR /INSTALL
-COPY ./*.* ./
+COPY ./watchdog/*.* ./
 RUN npm install --only=production
 
 
@@ -43,7 +43,7 @@ VOLUME ["/repo"]
 # Install / Config watchdog
 WORKDIR /watchdog
 
-COPY ./*.js ./
+COPY ./watchdog/*.js ./
 COPY --from=NODE_MODULES /INSTALL/node_modules/ ./node_modules/
 
 # Cleanup

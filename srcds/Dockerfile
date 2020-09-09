@@ -4,7 +4,7 @@ RUN apt-get update \
 		&& apt-get install -y \
 			build-essential
 
-COPY ./main.cpp ./
+COPY ./srcds/main.cpp ./
 RUN gcc -o main main.cpp
 
 
@@ -31,7 +31,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /srcds
 
-COPY ./*.sh ./
+COPY ./srcds/*.sh ./
 COPY --from=ENTRYPOINT main ./
 
 RUN useradd -m srcds && mkdir srv && chown srcds srv
