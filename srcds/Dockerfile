@@ -34,7 +34,7 @@ WORKDIR /srcds
 COPY ./srcds/*.sh ./
 COPY --from=ENTRYPOINT main ./
 
-RUN useradd -m srcds && mkdir srv && chown srcds srv
+RUN useradd -m srcds && mkdir srv && chown srcds srv && chmod +x *.sh
 
 USER srcds
 
