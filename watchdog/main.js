@@ -210,11 +210,7 @@ const downloadManager = new (class {
 			});
 
 			oldVersion = /(.+?)\n/.exec(oldVersion)[1];
-
-			console.log("OLDDIR: ", oldVersion);
-		} catch(ex) {
-			console.log("OLDIR FAILED:", ex);
-		}
+		} catch {}
 
 		// console.log("Changed files: ", changedFiles);
 
@@ -254,7 +250,7 @@ const downloadManager = new (class {
 		}
 
 		// Only keep the latest N versions stored
-		execSync(`rm $(ls -td ${appBaseDir}/v_*/ | tail -n+${(parseInt(process.env.KEEPCOUNT) || 3) + 1}) 2> /dev/null`);
+		execSync(`rm $(ls -td ${appBaseDir}/v_*/ | tail -n+${(parseInt(process.env.KEEPCOUNT) || 3) + 1}) 2> /dev/null || true`);
 	}
 })
 
