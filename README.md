@@ -4,7 +4,7 @@ Easy to use system that allows deduplicated hosting / management of Source Engin
 
 This system consists of one Management (Watchdog) image and the server image itself.
 
-## Watchdog
+## Watchdog (srcdocks:latest / srcdocks:watchdog)
 
 The watchdogs purpose is to keep the local "repository" of the desired servers, as well as Meta- and SourceMod up to date.
 
@@ -23,7 +23,7 @@ The watchdogs purpose is to keep the local "repository" of the desired servers, 
 
 **KEEPCOUNT** is used to keep a history of server files per server type. This should NOT be lower than 2. The versions themselves are de-duplicated themselves as well using Hardlinks, so only whatever changes between versions is used up as extra space.
 
-## Server
+## Server (srcdocks:server)
 
 The server image makes use of the supplied server binaries of the watchdog. Its entrypoint makes sure to link to the latest version available on restart and uses the `-autoupdate` cmdline argument of SRCDS to automatically shut down (And thus switch to a possibly available update) whenever it is outdated.
 
