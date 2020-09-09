@@ -15,7 +15,7 @@ ENV SRCDS_ARGS=""
 ENV NO_BSP_CVAR=0
 ENV SRCDS_RUN=0
 
-VOLUME [ "/repo", "/custom" ]
+VOLUME [ "/repo", "/custom", "/layers" ]
 
 RUN apt-get update \
 		&& apt-get install -y --no-install-recommends --no-install-suggests \
