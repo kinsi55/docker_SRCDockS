@@ -60,7 +60,7 @@ Base Folder: `/layers/steamworks`, contains its extension files in the respectiv
 
 ##### Custom folder:
 
-Everything (Except the LAYERS folder in it) is linked into the mod directory in the same fashion as layers are
+Everything in it is linked into the mod directory in the same fashion as layers are
 
 ### Extras
 
