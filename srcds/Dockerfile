@@ -14,6 +14,8 @@ ENV APP_NAME=csgo
 ENV SRCDS_ARGS=""
 ENV NO_BSP_CVAR=0
 ENV SRCDS_RUN=0
+ENV IP=0.0.0.0
+ENV PORT=27015
 
 VOLUME [ "/repo", "/custom", "/layers" ]
 

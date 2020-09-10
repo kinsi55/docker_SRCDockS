@@ -41,6 +41,12 @@ The entire server structure is rebuilt on every restart, so any files actively w
 2. `SRCDS_ARGS` - cmdline arguments to pass to the server (e.g. `-tickrate 128 -nobots`)
 3. `NO_BSP_CVAR` - If true (1) will delete the `bspconvar_whitelist.txt` file upon start which prevents maps from changing server cvars and removes a lot of verbose console spam.
 4. `SRCDS_RUN` - If true (1) will use the `srcds_run` script instead of directly running the `srcds_linux` binary. I'm unsure if my implementation is going to break with some mod so I've added `srcds_run` as a fallback for now. Might be removed in the future.
+5. `IP` - IP to bind the server to, defaults to 0.0.0.0
+6. `PORT` - Port to bind the server to, defaults to 27015
+
+IP / PORT are also what will be accessed to do the healthcheck. If you need to access a different IP/port for that you can override it with `HEALTH_IP` and `HEALTH_PORT` respectively
+
+**ℹ Depending on how your network is set up, you might want to / have to use host networking instead of a bridge, for example when you're using a failover IP, as otherwise you're unable to bind to your failover IP, and with GSLT / the game coordinator that would mean players need to access your server trough your primary ip, not your failover IP**
 
 ### Layers (/layers/*)
 
