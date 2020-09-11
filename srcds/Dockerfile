@@ -16,6 +16,7 @@ ENV NO_BSP_CVAR=0
 ENV SRCDS_RUN=0
 ENV IP=0.0.0.0
 ENV PORT=27015
+ENV STOCK_SM_PLUGINS=""
 
 VOLUME [ "/repo", "/custom", "/layers" ]
 

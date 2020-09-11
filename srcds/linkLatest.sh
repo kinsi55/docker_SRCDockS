@@ -3,7 +3,7 @@
 # When you mount something to, say, /srcds/srv/csgo/addons/sourcemod/logs, -mount prevents the logs
 # folder from being emptied as the bind-mound is a different "device" / filesystem
 safeEmpty() {
-	find $1 -mount -type f,s -delete
+	find $1 -mount -type f,l -delete
 }
 
 loadLatestVersion() {
@@ -19,9 +19,10 @@ loadLatestVersion() {
 
 	# Ensure we dont encounter a half-written version.
 	# If the folder is newer than 6 seconds sleep a bit for good measure
-	if test -z `find "$latest" -mmin -0.1`
+	if [[ -n "$(find "$latest" -mmin -0.1)" ]]
 	then
-		sleep 3
+		echo "Sleeping because $latest isnt old enough: '$thaOut'"
+		#sleep 3
 	fi
 
 	# Make sure to delete only symlinks, this way if e.g. the logs directory is bind-mounted
@@ -31,7 +32,7 @@ loadLatestVersion() {
 
 	# While we're here we might as well create these files to prevent unnecessary console messages
 	ln -sf /srcds/srv/bin/steamclient.so ~/.steam/sdk32/
-	(cd /srcds/srv/$APP_NAME/ && touch cfg/default.cfg cfg/server.cfg cfg/gamemode_casual_server.cfg)
+	(cd /srcds/srv/$APP_NAME/ && touch cfg/default.cfg cfg/server.cfg)
 
 	if [[ $NO_BSP_CVAR == "1" ]]
 	then
@@ -44,6 +45,15 @@ loadCleanAddons() {
 
 	cp -rsf /repo/mm/* /srcds/srv/$APP_NAME/
 	cp -rsf /repo/sm/* /srcds/srv/$APP_NAME/
+
+	if [[ $STOCK_SM_PLUGINS ]]
+	then
+		local keepList="\($(echo "$STOCK_SM_PLUGINS" | sed "s/,/\\\\|/g")\).smx"
+		echo "Keeplist: $keepList"
+		# Hack with -mount so that we dont delete stuff in a possibly mounted plugins folder
+		# incase the user goofs. We only find / delete links anyways and not files but eh
+		find /srcds/srv/$APP_NAME/addons/sourcemod -mount -type l -path "*/plugins/*.smx" -not -regex ".*/$keepList$" -delete
+	fi
 }
 
 addCustomFiles() {
