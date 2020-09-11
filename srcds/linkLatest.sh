@@ -21,8 +21,7 @@ loadLatestVersion() {
 	# If the folder is newer than 6 seconds sleep a bit for good measure
 	if [[ -n "$(find "$latest" -mmin -0.1)" ]]
 	then
-		echo "Sleeping because $latest isnt old enough: '$thaOut'"
-		#sleep 3
+		sleep 3
 	fi
 
 	# Make sure to delete only symlinks, this way if e.g. the logs directory is bind-mounted
@@ -49,7 +48,6 @@ loadCleanAddons() {
 	if [[ $STOCK_SM_PLUGINS ]]
 	then
 		local keepList="\($(echo "$STOCK_SM_PLUGINS" | sed "s/,/\\\\|/g")\).smx"
-		echo "Keeplist: $keepList"
 		# Hack with -mount so that we dont delete stuff in a possibly mounted plugins folder
 		# incase the user goofs. We only find / delete links anyways and not files but eh
 		find /srcds/srv/$APP_NAME/addons/sourcemod -mount -type l -path "*/plugins/*.smx" -not -regex ".*/$keepList$" -delete
