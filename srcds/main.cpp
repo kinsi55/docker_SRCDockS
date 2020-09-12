@@ -16,7 +16,7 @@ int lastStart = 0;
 
 void exitHandler(int /*signum*/) {
 	if(!shouldEnd) {
-		printf("exitHandler => %i\n", forkPid);
+		printf("Graceful shutdown request...\n");
 		shouldEnd = true;
 
 		// This will send sigint to EVERYTHING, which is fine for me.
@@ -43,18 +43,16 @@ int parent() {
 		inited = true;
 	}
 
-	for (;;) {
-		int Stat;
-		while(waitpid(forkPid, &Stat, WNOHANG) != forkPid);
-		if(WIFEXITED(Stat)) {
-			printf("Server exited with code %i\n", WEXITSTATUS(Stat));
-			return 0;
-		} else {
-			printf("Exiting\n");
-		}
-
-		return 1;
+	int Stat;
+	waitpid(forkPid, &Stat, 0);
+	if(WIFEXITED(Stat)) {
+		printf("Server exited with code %i\n", WEXITSTATUS(Stat));
+		return 0;
+	} else {
+		printf("Exiting\n");
 	}
+
+	return 1;
 }
 
 int execServer(void) {
