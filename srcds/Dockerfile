@@ -18,7 +18,7 @@ ENV IP=0.0.0.0
 ENV PORT=27015
 ENV STOCK_SM_PLUGINS=""
 
-VOLUME [ "/repo", "/custom", "/layers" ]
+VOLUME [ "/repo" ]
 
 RUN apt-get update \
 		&& apt-get install -y --no-install-recommends --no-install-suggests \
