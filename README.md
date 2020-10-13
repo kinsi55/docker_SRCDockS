@@ -1,4 +1,4 @@
-# SRCDockS (❗ Experimental / WIP ❗)
+# SRCDockS
 
 Easy to use system that allows deduplicated hosting / management of Source Engine based game servers. Unlike other solutions, this one completely throws the idea of Docker and how a container should be static / unchangeable out of the window as you otherwise cannot really host gameservers in a good fashion.
 
