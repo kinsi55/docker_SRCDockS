@@ -56,9 +56,8 @@ class AppManager {
 			if(latestVersion > this.latestVersion) {
 				console.log("Update detected for Appid %s(%s): %s => %s", this.app.downloadId, this.app.name, this.latestVersion, latestVersion);
 
-				downloadManager.enqueueUpdate(this, latestVersion);
-
-				this.latestVersion = latestVersion;
+				if(downloadManager.enqueueUpdate(this, latestVersion))
+					this.latestVersion = latestVersion;
 			}
 		} catch(ex) {
 			console.log("Failed to check for update of %s:", this.app.name, ex);
@@ -105,15 +104,19 @@ const downloadManager = new (class {
 	 * @returns
 	 */
 	enqueueUpdate(manager, version) {
-		// We're already downloading this.
-		if(this.tasks.some(x => x.version == version || x.manager == appManager))
+		/*
+			We're already downloading this. If an update is pushed while we're in the process of downloading
+			this app this would end up returning false and thus not enqueue the update - but it will repeadetly
+			try again and eventually check if the then downloaded version is already the latest one
+		*/
+		if(this.tasks.some(x => /*x.version == version ||*/ x.manager == manager))
 			return false;
 
 		const installedVersion = getInstalledVersion(`${repoDir}/${manager.app.name}/latest/${manager.app.name}/steam.inf`);
 
 		if(installedVersion >= version) {
 			console.warn("We were supposed to update app %s to version %s but we already have %s installed, ignoring...", manager.app.name, version, installedVersion);
-			return;
+			return true;
 		}
 
 		console.log("Enqueued download of AppID %s", manager.app.downloadId);
@@ -123,6 +126,8 @@ const downloadManager = new (class {
 		// If we just added the first task in a queue there isnt anyone left that would "resume" work
 		if(this.tasks.length === 1)
 			this.work();
+
+		return true;
 	}
 
 	async work() {
@@ -142,7 +147,8 @@ const downloadManager = new (class {
 			// We'll retry this later
 			this.tasks.push(this.tasks.shift());
 		}
-		setTimeout(() => {
+
+		if(this.tasks.length) setTimeout(() => {
 			this.work();
 		}, 1000);
 	}
