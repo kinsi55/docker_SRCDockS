@@ -83,9 +83,6 @@ int main(int argc,char** argv) {
 			break;
 
 		gettimeofday(&tv, NULL);
-		printf("Restarting in %i second(s)...\n", restartDelay);
-
-		sleep(restartDelay);
 
 		// Only when the server was up for at least 60 seconds we want to reset the restart delay
 		if(tv.tv_sec - lastStart > 60) {
@@ -93,6 +90,9 @@ int main(int argc,char** argv) {
 		} else if(restartDelay < 32) {
 			restartDelay *= 2;
 		}
+
+		printf("Restarting in %i second(s)...\n", restartDelay);
+		sleep(restartDelay);
 	}
 
 	return 0;
