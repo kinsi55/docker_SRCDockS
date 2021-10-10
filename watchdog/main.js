@@ -256,7 +256,7 @@ const downloadManager = new (class {
 		}
 
 		// Only keep the latest N versions stored
-		execSync(`rm $(ls -td ${appBaseDir}/v_*/ | tail -n+${(parseInt(process.env.KEEPCOUNT) || 3) + 1}) 2> /dev/null || true`);
+		execSync(`rm -r $(ls -td ${appBaseDir}/v_*/ | tail -n+${(Math.max(0, parseInt(process.env.KEEPCOUNT)) || 3) + 1}) 2> /dev/null || true`);
 	}
 })
 
