@@ -24,6 +24,7 @@ RUN apt-get update \
 		&& apt-get install -y --no-install-recommends --no-install-suggests \
 			lib32gcc1 \
 			lib32stdc++6 \
+			lib32z1 \
 #			procps \
 			ca-certificates \
 			netcat \
