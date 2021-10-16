@@ -1,9 +1,24 @@
 #!/bin/bash
 
-# When you mount something to, say, /srcds/srv/csgo/addons/sourcemod/logs, -mount prevents the logs
-# folder from being emptied as the bind-mound is a different "device" / filesystem
+# When you mount something to, say, /srcds/srv/csgo/addons/sourcemod/logs, -mount prevents the files
+# in the logs folder from being deleted as the bind-mound is a different "device" / filesystem
 safeEmpty() {
 	find $1 -mount -type f,l -delete
+}
+
+loadOverlays() {
+	# Lord send help
+	find /overlays/ -mount -type d | while read overlay; do
+		mountpoint -q "$overlay"
+		if [ $? -eq 0 ]; then
+			target="${overlay/overlays/srcds/srv/$APP_NAME}"
+
+			echo "Mounting '$overlay' in place of '$target'"
+
+			rm -rf "$target"
+			ln -s "$overlay" "$target"
+		fi
+	done
 }
 
 loadLatestVersion() {
@@ -28,6 +43,8 @@ loadLatestVersion() {
 	# Files written to it will not be deleted as they're not symlinks but real files
 	safeEmpty /srcds/srv/
 	cp -rsf $latest* /srcds/srv/
+	echo "Adding overlays..."
+	loadOverlays
 
 	# While we're here we might as well create these files to prevent unnecessary console messages
 	ln -sf /srcds/srv/bin/steamclient.so ~/.steam/sdk32/

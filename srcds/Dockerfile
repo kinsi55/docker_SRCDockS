@@ -20,6 +20,11 @@ ENV STOCK_SM_PLUGINS=""
 
 VOLUME [ "/repo" ]
 
+ARG apt_install_packages
+ARG run_before_apt
+
+RUN $run_before_apt
+
 RUN apt-get update \
 		&& apt-get install -y --no-install-recommends --no-install-suggests \
 			lib32gcc1 \
@@ -28,7 +33,10 @@ RUN apt-get update \
 #			procps \
 			ca-certificates \
 			netcat \
-			curl
+			curl \
+			$apt_install_packages
+
+RUN mkdir /overlays
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -47,8 +55,6 @@ RUN mkdir -p ~/Steam ~/.steam/sdk32/
 
 EXPOSE 27015/tcp 27015/udp
 
-#ENTRYPOINT [ "bash", "/srcds/main.sh" ]
 ENTRYPOINT [ "/srcds/main" ]
 
-#HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 CMD [ "test -n \"$(echo -ne '\xff\xff\xff\xffTSource Engine Query\0' | nc -u -w 1 $(hostname) 27015)\"" ]
-HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 CMD [ "/srcds/healthcheck.sh" ]
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=2 CMD [ "/srcds/healthcheck.sh" ]

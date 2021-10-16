@@ -1,5 +1,5 @@
 {
-  "name": "csgotest",
+  "name": "watchdoge",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,9 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "dockerode": "^3.2.1",
     "node-fetch": "^2.6.0"
   }
 }
