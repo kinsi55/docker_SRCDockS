@@ -15,6 +15,7 @@ loadOverlays() {
 
 			echo "Mounting '$overlay' in place of '$target'"
 
+			mkdir -p "$target"
 			rm -rf "$target"
 			ln -s "$overlay" "$target"
 		fi
