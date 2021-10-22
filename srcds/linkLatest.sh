@@ -6,7 +6,8 @@ safeEmpty() {
 	find $1 -mount -type f,l -delete
 }
 
-loadOverlays() {
+addOverlays() {
+	echo "Adding overlays..."
 	# Lord send help
 	find /overlays/ -mount -type d | while read overlay; do
 		mountpoint -q "$overlay"
@@ -44,8 +45,6 @@ loadLatestVersion() {
 	# Files written to it will not be deleted as they're not symlinks but real files
 	safeEmpty /srcds/srv/
 	cp -rsf $latest* /srcds/srv/
-	echo "Adding overlays..."
-	loadOverlays
 
 	# While we're here we might as well create these files to prevent unnecessary console messages
 	ln -sf /srcds/srv/bin/steamclient.so ~/.steam/sdk32/
@@ -84,4 +83,5 @@ cd /srcds/srv
 
 loadLatestVersion
 loadCleanAddons
+addOverlays
 addCustomFiles
