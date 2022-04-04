@@ -33,7 +33,8 @@ The entire server structure is rebuilt on every restart, so any files actively w
 
 1. `/repo` - The directory maintained by the Watchdog container. Can / Should be mounted as read-only
 2. `/custom` - Custom files specific to this server
-3. `/layers` - Custom layers unspecific to this server
+3. `/layers` - Custom layers unspecific to this server (Plugins that are reused, configs, ...)
+4. `/overlays` - The function of overlays and how it differs from customs and layers is explained in detail below
 
 #### Env variables:
 
@@ -57,17 +58,28 @@ Layers allow you to have various seperate additions to add to a server, like one
 
 Like layers, everything in the custom directory is linked into the server on launch, but unlike layers files that are in this directory are meant to be ones that are specific to this server, like configurations that differ from one server to another, etc. Additionally, Custom files have priority over layers. So if a layer creates a certain file which also exists in the custom directory it will be overwritten.
 
-**⚠️ Both Layers and custom files are applied to the *base mod folder*, not the base server folder. So for CS:GO the files land in `/server/csgo`**
+**⚠️ Both the Custom directory and Layers take all the *files* and link them in the respective places at startup of the server, and while you can modify existing custom files while the server is running (And the changes are instantly applied since the files are symlinked) to add new files you need to restart the server and thus cause a rebuild**
 
-**⚠️ While you can modify existing custom files while the server is running (And the changes are instantly applied since the files are symlinked) to add new files you need to restart the server and thus cause a rebuild**
+### Overlays (/overlays/*)
+
+Overlays are basically a combination and more powerful alterantive to the two prior features. Overlays are used to link entire folders into the server. One example for this would be if you want to have a shared folder of maps thats used across all servers. This would of course work using a layer since it would link all the maps into the server on start, but if you add a map afterwards it would not be available to the server, and if the server was to download a map at runtime, it would not make it to the host folder.
+
+Another example would be having recorded demos actually save to the host folder instead of vanishing on server restart.
+
+
+**⚠️ All of these are applied to the *base mod folder*, not the base server folder. So for CS:GO the files land in `/server/csgo`**
 
 ##### Example for a Layer:
 
-Base Folder: `/layers/steamworks`, contains its extension files in the respective directory structure `addons/sourcemod/extensions/*`
+You have a folder on your host with the structure `<layer folder>/addons/sourcemod/extensions/*`, `*` in that case being the extensions you want to be part of this layer. You would then mount `<layer folder>` into the server at `/layers/<any name>`.
 
 ##### Custom folder:
 
-Everything in it is linked into the mod directory in the same fashion as layers are
+The structure of custom folders and layers is exactly the same, except that files that have been added by a layer can be overwritten by ones that possibly exist in a custom folder
+
+##### Overlays:
+
+Overlays function very similarly to the Custom folder and Layers, except the startup script of the server looks for any mountpoints in the Overlays folder and links those folders in place of what might already be there. So for an example, you could have a folder on your host called `workshopmaps` which you then mount to the server container at the path `/overlays/maps/workshop`. the host workshop maps folder is then linked in place of the `<mod>/maps/workshop` folder
 
 ### Extras
 
