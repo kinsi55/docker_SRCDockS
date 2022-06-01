@@ -183,11 +183,16 @@ const downloadManager = new (class {
 			]);
 
 			let finished = false;
+			let lastLogOutput = Date.now();
+			const stallCheckInterval = 60000 * 3;
 
-			const timeout = setTimeout(() => {
+			const stallCheck = setInterval(() => {
+				if(Date.now() - lastLogOutput < stallCheckInterval)
+					return;
+
 				rej();
 				proc.kill("SIGKILL");
-			}, 1000*60*15);
+			}, stallCheckInterval);
 
 			proc.stdout.setEncoding("utf-8");
 			proc.stdout.on("data", (data) => {
@@ -196,10 +201,12 @@ const downloadManager = new (class {
 
 				if(data.includes(`Success! App '${downloadId}' fully installed.`))
 					finished = true;
+
+				lastLogOutput = Date.now();
 			});
 
 			proc.on("exit", () => {
-				clearTimeout(timeout);
+				clearInterval(stallCheck);
 				if(!finished)
 					return rej();
 
