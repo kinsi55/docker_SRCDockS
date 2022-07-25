@@ -27,7 +27,7 @@ The watchdogs purpose is to keep the local "repository" of the desired servers, 
 
 The server image makes use of the supplied server binaries of the watchdog. Its entrypoint makes sure to link to the latest version available on restart and uses the `-autoupdate` cmdline argument of SRCDS to automatically shut down (And thus switch to a possibly available update) whenever it is outdated.
 
-The entire server structure is rebuilt on every restart, so any files actively written while the server is running will be deleted in this process. If your server is writing files which you need to keep (e.g. SourceMod logs) make sure to mount directories to the paths where the files in question are written (e.g. `/srcds/srv/csgo/addons/sourcemod/logs`)
+The entire server structure is rebuilt on every restart, so any files actively written while the server is running will be deleted in this process. If your server is writing files which you need to keep (e.g. SourceMod logs) make sure to use [Overlays](#overlays-overlays) (e.g. `/srcds/srv/csgo/addons/sourcemod/logs`)
 
 #### Mounts:
 
