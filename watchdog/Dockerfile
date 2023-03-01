@@ -21,7 +21,7 @@ RUN npm install --only=production
 
 FROM NODE
 
-ENV SM_VERSION=1.10
+ENV SM_VERSION=1.11
 ENV MM_VERSION=1.11
 
 ENV APPS="csgo:740:730"
