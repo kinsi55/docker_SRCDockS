@@ -20,6 +20,7 @@ ENV STOCK_SM_PLUGINS=""
 
 VOLUME [ "/repo" ]
 
+ARG UID=1000
 ARG apt_install_packages
 ARG run_before_apt
 
@@ -46,7 +47,7 @@ WORKDIR /srcds
 COPY ./srcds/*.sh ./
 COPY --from=ENTRYPOINT main ./
 
-RUN useradd -m srcds && mkdir srv && chown srcds srv && chmod +x *.sh
+RUN useradd -m -u $UID srcds && mkdir srv && chown srcds srv && chmod +x *.sh
 
 USER srcds
 
