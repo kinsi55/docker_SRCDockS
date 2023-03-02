@@ -308,10 +308,11 @@ async function checkAddonUpdates(initial) {
 	async function dl(whatShort, base, path) {
 		execSync(`rm -rf /tmp/${whatShort} || true`);
 
-		await execP(`set -o pipefail; curl -s "${base}/${path}" | tar xz -C /tmp --one-top-level=${whatShort}`, {shell: "/bin/bash"})
+		await execP(`set -o pipefail; curl -s "${base}/${path}" | tar xz --owner=1000 -C /tmp --one-top-level=${whatShort}`, {shell: "/bin/bash"})
 
 		await execP(`rm -rf /repo/${whatShort}/* || true`);
 		await execP(`mv /tmp/${whatShort}/* /repo/${whatShort}/`);
+		await execP(`chmod -R 0777 /repo/${whatShort}/`);
 	}
 
 	if(latestMM != addons.latestMM) {
