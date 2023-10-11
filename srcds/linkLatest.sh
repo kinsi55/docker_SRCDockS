@@ -46,8 +46,16 @@ loadLatestVersion() {
 	safeEmpty /srcds/srv/
 	cp -rsf $latest* /srcds/srv/
 
+	# The CS2 Release is a Dumpsterfire (This is temporary (Hopefully))
+	if [[ $APP_NAME == "cs2cl" ]]
+	then
+		ln -s /srcds/srv/game/csgo /srcds/srv/cs2cl
+		mkdir -p ~/.steam/sdk64/
+		ln -sf /srcds/srv/steamclient.so ~/.steam/sdk64/
+	fi
+
 	# While we're here we might as well create these files to prevent unnecessary console messages
-	ln -sf /srcds/srv/bin/steamclient.so ~/.steam/sdk32/
+	ln -sf /srcds/srv/bin/steamclient.so ~/.steam/sdk32/ 2> /dev/null || true
 	(cd /srcds/srv/$APP_NAME/ && touch cfg/default.cfg cfg/server.cfg)
 
 	if [[ $NO_BSP_CVAR == "1" ]]

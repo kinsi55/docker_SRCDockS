@@ -4,9 +4,14 @@ RUN dpkg --add-architecture i386 \
 		&& apt-get update \
     && apt-get install -y --no-install-recommends --no-install-suggests \
         ca-certificates \
-				curl
+				curl \
+				gnupg
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update
 RUN apt-get install -y nodejs --no-install-recommends --no-install-suggests
 
 
@@ -15,16 +20,17 @@ FROM NODE AS NODE_MODULES
 
 WORKDIR /INSTALL
 COPY ./watchdog/*.* ./
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 
 
 FROM NODE
 
 ENV SM_VERSION=1.11
+ENV STEAMCMD_LOGIN=anonymous
 ENV MM_VERSION=1.11
 
-ENV APPS="csgo:740:730"
+ENV APPS="cs2cl:730"
 ENV KEEPCOUNT=3
 
 RUN apt-get install -y --no-install-recommends --no-install-suggests \

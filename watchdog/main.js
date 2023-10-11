@@ -45,8 +45,19 @@ class AppManager {
 		this.checkInstalledVersion();
 	}
 
+	static getSteamInfPath(appName) {
+		if(appName === "cs2cl")
+			return `${repoDir}/${appName}/latest/game/csgo/steam.inf`;
+
+		return `${repoDir}/${appName}/latest/${appName}/steam.inf`;
+	}
+
+	getSteamInfPath() {
+		return AppManager.getSteamInfPath(this.app.name);
+	}
+
 	checkInstalledVersion() {
-		this.latestVersion = getInstalledVersion(`${repoDir}/${this.app.name}/latest/${this.app.name}/steam.inf`);
+		this.latestVersion = getInstalledVersion(this.getSteamInfPath());
 	}
 
 	async updateCheck() {
@@ -112,7 +123,7 @@ const downloadManager = new (class {
 		if(this.tasks.some(x => /*x.version == version ||*/ x.manager == manager))
 			return false;
 
-		const installedVersion = getInstalledVersion(`${repoDir}/${manager.app.name}/latest/${manager.app.name}/steam.inf`);
+		const installedVersion = getInstalledVersion(manager.getSteamInfPath());
 
 		if(installedVersion >= version) {
 			console.warn("We were supposed to update app %s to version %s but we already have %s installed, ignoring...", manager.app.name, version, installedVersion);
@@ -176,8 +187,8 @@ const downloadManager = new (class {
 				"+@NoPromptForPassword", "1",
 				"+@bMetricsEnabled", "0",
 				//"+@nCSClientRateLimitKbps", "0",
-				"+login", "anonymous",
 				"+force_install_dir", `${appBaseDir}/latest`,
+				"+login", ...(process.env.STEAMCMD_LOGIN || "anonymous").split(" "),
 				"+app_update", downloadId, "validate",
 				"+quit"
 			]);
@@ -227,7 +238,7 @@ const downloadManager = new (class {
 
 		// console.log("Changed files: ", changedFiles);
 
-		const installedVersion = getInstalledVersion(`${appBaseDir}/latest/${name}/steam.inf`);
+		const installedVersion = getInstalledVersion(AppManager.getSteamInfPath(name));
 		const curVersionDir = `${appBaseDir}/v_${installedVersion}`
 
 		execSync(`mkdir -p ${curVersionDir}`);
@@ -236,12 +247,17 @@ const downloadManager = new (class {
 
 		lastGameUpdate = Date.now();
 
-		const tasks = cleanupScripts[name];
+		const tasks = cleanupScripts[downloadId];
 
 		if(tasks) {
 			console.log("Running cleanup script...");
-			for(let task of tasks)
-				execSync(`${task} || true`, {cwd: curVersionDir});
+			for(const task of tasks) {
+				if(typeof task === "function") {
+					task(curVersionDir);
+				} else {
+					execSync(`${task} || true`, {cwd: curVersionDir});
+				}
+			}
 			console.log("Cleanup done!");
 		}
 

@@ -18,8 +18,9 @@ The watchdogs purpose is to keep the local "repository" of the desired servers, 
 2. `MM_VERSION` - Major MetaMod version to maintain, currently defaults to 1.10 (Stable)
 3. `KEEPCOUNT` - The amount of versions to store per server type
 4. `APPS` - Which *server types* should be maintained
+5. `STEAMCMD_LOGIN` - Login details passed to SteamCMD. Format is `accountname [password] [MFA Code]`
 
-**APPS** should be a comma-seperated list of which server types (CS:GO, CS:S, TF2, ...) you want to run using the Server image. These are passed in the format of `server_folder_name:download_appid:version_appid`, so for CS:GO it is `csgo:740:730`. If `download_appid` and `version_appid` match you can omit `version_appid`.
+**APPS** should be a comma-seperated list of which server types (CS2, CS:S, TF2, ...) you want to run using the Server image. These are passed in the format of `server_folder_name:download_appid:version_appid`, so for CS2 it is currently `cs2cl:730`. `cs2cl` in this case is important because based off that various hacks are applied to run the client binaries properly because Valve decided to not give us server binaries on release. If `download_appid` and `version_appid` match you can omit `version_appid`.
 
 **KEEPCOUNT** is used to keep a history of server files per server type. This should NOT be lower than 2. The versions themselves are de-duplicated themselves as well using Hardlinks, so only whatever changes between versions is used up as extra space.
 
@@ -27,7 +28,7 @@ The watchdogs purpose is to keep the local "repository" of the desired servers, 
 
 The server image makes use of the supplied server binaries of the watchdog. Its entrypoint makes sure to link to the latest version available on restart and uses the `-autoupdate` cmdline argument of SRCDS to automatically shut down (And thus switch to a possibly available update) whenever it is outdated.
 
-The entire server structure is rebuilt on every restart, so any files actively written while the server is running will be deleted in this process. If your server is writing files which you need to keep (e.g. SourceMod logs) make sure to use [Overlays](#overlays-overlays) (e.g. `/srcds/srv/csgo/addons/sourcemod/logs`)
+The entire server structure is rebuilt on every restart, so any files actively written while the server is running will be deleted in this process. If your server is writing files which you need to keep (e.g. SourceMod logs) make sure to use [Overlays](#overlays-overlays) (e.g. `/srcds/srv/cstrike/addons/sourcemod/logs`)
 
 #### Mounts:
 
@@ -41,7 +42,7 @@ The entire server structure is rebuilt on every restart, so any files actively w
 1. `APP_NAME` - The name of the server type (e.g. `csgo`)
 2. `SRCDS_ARGS` - cmdline arguments to pass to the server (e.g. `-tickrate 128 -nobots`)
 3. `NO_BSP_CVAR` - If true (1) will delete the `bspconvar_whitelist.txt` file upon start which prevents maps from changing server cvars and removes a lot of verbose console spam.
-4. `SRCDS_RUN` - If true (1) will use the `srcds_run` script instead of directly running the `srcds_linux` binary. I'm unsure if my implementation is going to break with some mod so I've added `srcds_run` as a fallback for now. Might be removed in the future.
+4. `SRCDS_RUN` - If true (1) will use the `srcds_run` script instead of directly running the `srcds_linux` binary. I'm unsure if my implementation is going to break with some mod so I've added `srcds_run` as a fallback for now. Might be removed in the future. **This is forced on for cs2cl servers**
 5. `IP` - IP to bind the server to, defaults to 0.0.0.0
 6. `PORT` - Port to bind the server to, defaults to 27015
 7. `STOCK_SM_PLUGINS` - If not empty (Default) will delete all but the specified default plugins that ship with SourceMod. If you want to keep Basebans and Basecommands you would specify `basebans,basecommands`. If you want to delete all plugins just specify any non-empty value thats not the name of a default plugin.

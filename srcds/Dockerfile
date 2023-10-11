@@ -1,4 +1,4 @@
-FROM debian:buster-slim as ENTRYPOINT
+FROM debian:bullseye-slim as ENTRYPOINT
 
 RUN apt-get update \
 		&& apt-get install -y \
@@ -8,7 +8,7 @@ COPY ./srcds/main.cpp ./
 RUN gcc -o main main.cpp
 
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ENV APP_NAME=csgo
 ENV SRCDS_ARGS=""
@@ -28,7 +28,7 @@ RUN $run_before_apt
 
 RUN apt-get update \
 		&& apt-get install -y --no-install-recommends --no-install-suggests \
-			lib32gcc1 \
+#			lib32gcc1 \
 			lib32stdc++6 \
 			lib32z1 \
 #			procps \

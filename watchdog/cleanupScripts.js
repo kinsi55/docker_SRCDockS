@@ -1,5 +1,7 @@
+const fs = require("fs");
+
 module.exports = {
-	csgo: [
+	740: [
 		// Delete Windows / 64bit files
 		"rm -r steamapps srcds.exe chrome.pak",
 		"find . -name '*.dll' -type f,l -delete",
@@ -42,5 +44,39 @@ module.exports = {
 		"rm -rf bin/v8_winxp bin/prefabs bin/locales",
 		`rm -rf csgo/scripts/hammer`,
 		`rm -rf csgo/materials/panorama`
+	],
+	730: [
+		// THEY INCLUDE BUILDCHAIN STUFF IN THE RELEASE. 8000 FILES
+		`rm -rf sniper_*`,
+		`rm -rf pressure-vessel`,
+
+		// Dont need low violence paks
+		`rm -rf game/csgo_lv`,
+
+		// Dont need Vulkan Shaders
+		`rm -rf game/csgo/shaders_.vpk`,
+
+		// Dont need tools.
+		`rm -rf game/core/tools`,
+
+		// - Panorama UI stuff, only needed on the client
+		// - Resources are unused on the server, altho you could possibly add custom radars etc.
+		`rm -r game/csgo/panorama game/csgo/resource`,
+
+		// We are downloading the CS2 client, not server (Which doesnt exist because reasons (Yet ™)) so
+		// to streamline things we restructure this client to look like a srcds server.......... kind of
+
+		//`ln -s game/csgo/ cs2cl`,
+
+		(path) => fs.writeFileSync(`${path}/srcds_run`,
+`#!/bin/sh
+# Yep, that's me. You're probably wondering how I got into this situation ...
+
+game/bin/linuxsteamrt64/cs2 -dedicated $@`),
+
+		`chmod +x srcds_run`,
+
+		// I dont even care at this point
+		`cp /steamcmd/linux64/steamclient.so ./`
 	]
 };

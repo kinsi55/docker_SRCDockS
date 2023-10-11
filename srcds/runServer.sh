@@ -13,7 +13,7 @@ runServer() {
 
 cd /srcds/srv
 
-if [[ $SRCDS_RUN == "1" ]]
+if [[ $SRCDS_RUN == "1" || $APP_NAME == "cs2cl" ]]
 then
 	runServer
 else
