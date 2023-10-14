@@ -72,6 +72,15 @@ module.exports = {
 `#!/bin/sh
 # Yep, that's me. You're probably wondering how I got into this situation ...
 
+# If the cs2 binary is symlinked instead of physically being in the right location,
+# the server will resolve the files actual location and use that as its workdir,
+# thus, its ran from the repo folder and all the custom content is ignored
+# I sure hope this is not needed when we get server binaries
+if [ -h game/bin/linuxsteamrt64/cs2 ]
+then
+	cp --remove-destination "$(readlink game/bin/linuxsteamrt64/cs2)" game/bin/linuxsteamrt64/cs2
+fi
+
 game/bin/linuxsteamrt64/cs2 -dedicated $@`),
 
 		`chmod +x srcds_run`,
