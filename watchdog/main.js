@@ -291,15 +291,16 @@ function checkAppUpdates() {
 setInterval(checkAppUpdates, 1000 * 60);
 checkAppUpdates();
 
-
+const manageMM = !!process.env.MM_VERSION?.trim?.();
+const manageSM = !!process.env.SM_VERSION?.trim?.();
 
 const addons = {
 	latestMM: fs.existsSync("/repo/mm/version") ? fs.readFileSync("/repo/mm/version") : "",
 	latestSM: fs.existsSync("/repo/sm/version") ? fs.readFileSync("/repo/sm/version") : ""
 };
 
-const baseUrlMM = `https://mms.alliedmods.net/mmsdrop/${process.env.MM_VERSION || "1.10"}`
-const baseUrlSM = `https://sm.alliedmods.net/smdrop/${process.env.SM_VERSION || "1.10"}`
+const baseUrlMM = `https://mms.alliedmods.net/mmsdrop/${process.env.MM_VERSION || "1.10"}`;
+const baseUrlSM = `https://sm.alliedmods.net/smdrop/${process.env.SM_VERSION || "1.10"}`;
 
 async function checkAddonUpdates(initial) {
 	// Check for addon updates up to 2 days after a game update
@@ -317,8 +318,8 @@ async function checkAddonUpdates(initial) {
 	execSync("mkdir -p /repo/sm/ /repo/mm/");
 
 	const [latestMM, latestSM] = await Promise.all([
-		fetch(`${baseUrlMM}/mmsource-latest-linux`).then(x => x.text()),
-		fetch(`${baseUrlSM}/sourcemod-latest-linux`).then(x => x.text())
+		manageMM && fetch(`${baseUrlMM}/mmsource-latest-linux`).then(x => x.text()),
+		manageSM && fetch(`${baseUrlSM}/sourcemod-latest-linux`).then(x => x.text())
 	]);
 
 	async function dl(whatShort, base, path) {
@@ -331,7 +332,7 @@ async function checkAddonUpdates(initial) {
 		await execP(`chmod -R 0777 /repo/${whatShort}/`);
 	}
 
-	if(latestMM != addons.latestMM) {
+	if(latestMM && latestMM != addons.latestMM) {
 		dl("mm", baseUrlMM, latestMM).then(() => {
 			addons.latestMM = latestMM;
 			console.log("Updated Metamod to `%s`", latestMM);
@@ -341,7 +342,7 @@ async function checkAddonUpdates(initial) {
 		});
 	}
 
-	if(latestSM != addons.latestSM) {
+	if(latestSM && latestSM != addons.latestSM) {
 		dl("sm", baseUrlSM, latestSM).then(() => {
 			addons.latestSM = latestSM;
 			// Scripting folder isnt needed on the server

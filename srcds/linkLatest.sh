@@ -67,8 +67,8 @@ loadLatestVersion() {
 loadCleanAddons() {
 	safeEmpty /srcds/srv/$APP_NAME/addons/ 2> /dev/null
 
-	cp -rsf /repo/mm/* /srcds/srv/$APP_NAME/
-	cp -rsf /repo/sm/* /srcds/srv/$APP_NAME/
+	cp -rsf /repo/mm/* /srcds/srv/$APP_NAME/ || true
+	cp -rsf /repo/sm/* /srcds/srv/$APP_NAME/ || true
 
 	if [[ $STOCK_SM_PLUGINS ]]
 	then
