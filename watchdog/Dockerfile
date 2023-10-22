@@ -27,15 +27,21 @@ RUN npm install --omit=dev
 FROM NODE
 
 ENV SM_VERSION=1.11
-ENV STEAMCMD_LOGIN=anonymous
 ENV MM_VERSION=1.11
+ENV STEAMCMD_LOGIN=anonymous
+ARG UID=1000
 
 ENV APPS="cs2cl:730"
 ENV KEEPCOUNT=3
 
+RUN useradd -m -u $UID srcds
 RUN apt-get install -y --no-install-recommends --no-install-suggests \
 			lib32gcc1 \
 			rsync
+
+RUN apt-get clean autoclean \
+		&& apt-get autoremove -y \
+		&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /steamcmd
 
@@ -52,15 +58,14 @@ WORKDIR /watchdog
 COPY ./watchdog/*.js ./
 COPY --from=NODE_MODULES /INSTALL/node_modules/ ./node_modules/
 
+RUN chown -R $UID ./ /steamcmd
+
+USER srcds
+
 # Cleanup
 # RUN apt-get remove --purge -y apt-transport-https lsb-release gnupg \
 # 		&& apt-get clean autoclean \
 # 		&& apt-get autoremove -y \
 # 		&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN apt-get clean autoclean \
-		&& apt-get autoremove -y \
-		&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 
 ENTRYPOINT ["node", "/watchdog/main.js"]
