@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim as ENTRYPOINT
+FROM debian:bullseye-slim as entrypoint
 
 RUN apt-get update \
 		&& apt-get install -y \
@@ -45,7 +45,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 WORKDIR /srcds
 
 COPY ./srcds/*.sh ./
-COPY --from=ENTRYPOINT main ./
+COPY --from=entrypoint main ./
 
 RUN useradd -m -u $UID srcds && mkdir srv && chown srcds srv && chmod +x *.sh
 

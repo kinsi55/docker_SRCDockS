@@ -1,4 +1,4 @@
-FROM debian:buster-slim as NODE
+FROM debian:buster-slim as node
 
 RUN dpkg --add-architecture i386 \
 		&& apt-get update \
@@ -16,7 +16,7 @@ RUN apt-get install -y nodejs --no-install-recommends --no-install-suggests
 
 
 
-FROM NODE AS NODE_MODULES
+FROM node AS node-modules
 
 WORKDIR /INSTALL
 COPY ./watchdog/*.* ./
@@ -24,7 +24,7 @@ RUN npm install --omit=dev
 
 
 
-FROM NODE
+FROM node
 
 ENV SM_VERSION=1.11
 ENV MM_VERSION=1.11
@@ -56,7 +56,7 @@ VOLUME ["/repo"]
 WORKDIR /watchdog
 
 COPY ./watchdog/*.js ./
-COPY --from=NODE_MODULES /INSTALL/node_modules/ ./node_modules/
+COPY --from=node-modules /INSTALL/node_modules/ ./node_modules/
 
 RUN chown -R $UID ./ /steamcmd
 
