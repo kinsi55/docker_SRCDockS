@@ -47,7 +47,7 @@ WORKDIR /srcds
 COPY ./srcds/*.sh ./
 COPY --from=entrypoint main ./
 
-RUN useradd -m -u $UID srcds && mkdir srv && chown srcds srv && chmod +x *.sh
+RUN useradd -m -u $UID srcds && mkdir srv && chown srcds srv && chmod +rx *.sh
 
 USER srcds
 

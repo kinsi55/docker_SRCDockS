@@ -58,7 +58,7 @@ WORKDIR /watchdog
 COPY ./watchdog/*.js ./
 COPY --from=node-modules /INSTALL/node_modules/ ./node_modules/
 
-RUN chown -R $UID ./ /steamcmd
+RUN chown -R srcds ./ /steamcmd
 
 USER srcds
 
