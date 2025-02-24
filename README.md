@@ -15,7 +15,7 @@ The watchdogs purpose is to keep the local "repository" of the desired servers, 
 #### Env variables:
 
 1. `SM_VERSION` - Major SourceMod version to maintain, currently defaults to 1.10 (Stable)
-2. `MM_VERSION` - Major MetaMod version to maintain, currently defaults to 1.10 (Stable)
+2. `MM_VERSION` - Major MetaMod version to maintain, currently defaults to 1.11 (Stable)
 3. `KEEPCOUNT` - The amount of versions to store per server type
 4. `APPS` - Which *server types* should be maintained
 5. `STEAMCMD_LOGIN` - Login details passed to SteamCMD. Format is `accountname [password] [MFA Code]`
@@ -45,7 +45,9 @@ The entire server structure is rebuilt on every restart, so any files actively w
 4. `SRCDS_RUN` - If true (1) will use the `srcds_run` script instead of directly running the `srcds_linux` binary. I'm unsure if my implementation is going to break with some mod so I've added `srcds_run` as a fallback for now. Might be removed in the future. **This is forced on for cs2cl servers**
 5. `IP` - IP to bind the server to, defaults to 0.0.0.0
 6. `PORT` - Port to bind the server to, defaults to 27015
-7. `STOCK_SM_PLUGINS` - If not empty (Default) will delete all but the specified default plugins that ship with SourceMod. If you want to keep Basebans and Basecommands you would specify `basebans,basecommands`. If you want to delete all plugins just specify any non-empty value thats not the name of a default plugin.
+7. `STOCK_SM_PLUGINS` (Irrelevant to CS2) - If not empty (Default) will delete all but the specified default plugins that ship with SourceMod. If you want to keep Basebans and Basecommands you would specify `basebans,basecommands`. If you want to delete all plugins just specify any non-empty value thats not the name of a default plugin.
+8. `VERSION_PIN` - Can be used to pin the Server to a specific version rather than using the latest version
+9. `FAKELATEST` - When set / not empty, the server will use the `steam.inf` file from the latest version, no matter what version the server files are actually from. Game Updates often are non-breaking to the network protocol but can be breaking to plugins, this can be used as a stopgap in case of breaking updates to get the server back up until patches are available for the parts that broke.
 
 IP / PORT are also what will be accessed to do the healthcheck. If you need to access a different IP/port for that you can override it with `HEALTH_IP` and `HEALTH_PORT` respectively
 
